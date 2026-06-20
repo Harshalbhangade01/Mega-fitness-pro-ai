@@ -1,0 +1,78 @@
+@{
+    var plan = ViewBag.Plan as Plan;
+}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <h4 class="fw-bold mb-4"><i class="fas fa-credit-card me-2" style="color:#f39c12"></i>Complete Payment</h4>
+        <div class="card mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold" style="color:#f39c12">@plan?.PlanName</h5><small
+                        class="text-muted">@plan?.Description</small>
+                    </div>
+                    <h3 class="fw-bold" style="color:#27ae60">₹@plan?.Price</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="post" action="/User/ProcessPayment">
+                    <input type="hidden" name="planId" value="@plan?.Id" />
+                    <h6 class="fw-bold mb-3 text-muted text-uppercase" style="letter-spacing:1px">Payment Method</h6>
+                    <div class="row mb-4">
+                        <div class="col-4">
+                            <input type="radio" class="btn-check" name="paymentMethod" id="card" value="Card" checked />
+                            <label class="btn btn-outline-warning w-100" for="card"><i
+                                class="fas fa-credit-card d-block mb-1"></i>Card</label>
+                            </div>
+                            <div class="col-4">
+                                <input type="radio" class="btn-check" name="paymentMethod" id="upi" value="UPI" />
+                                <label class="btn btn-outline-warning w-100" for="upi"><i
+                                    class="fas fa-mobile-alt d-block mb-1"></i>UPI</label>
+                                </div>
+                                <div class="col-4">
+                                    <input type="radio" class="btn-check" name="paymentMethod" id="cash" value="Cash" />
+                                    <label class="btn btn-outline-warning w-100" for="cash"><i
+                                        class="fas fa-money-bill d-block mb-1"></i>Cash</label>
+                                    </div>
+                                </div>
+                                <div id="cardFields">
+                                    <div class="mb-3"><label class="form-label text-muted small">CARD NUMBER</label><input
+                                        type="text" name="cardNumber" class="form-control" placeholder="1234 5678 9012 3456"
+                                        maxlength="19" /></div>
+                                        <div class="row mb-3">
+                                            <div class="col-6"><label class="form-label text-muted small">EXPIRY</label><input
+                                                type="text" class="form-control" placeholder="MM/YY" /></div>
+                                                <div class="col-6"><label class="form-label text-muted small">CVV</label><input type="text"
+                                                                                                                                    class="form-control" placeholder="000" /></div>
+                                                </div>
+                                                <div class="mb-4"><label class="form-label text-muted small">CARDHOLDER NAME</label><input
+                                                    type="text" class="form-control" placeholder="John Doe" /></div>
+                                                </div>
+                                                <div id="upiFields" style="display:none">
+                                                    <div class="mb-4"><label class="form-label text-muted small">UPI ID</label><input type="text"
+                                                                                                                                          name="upiId" class="form-control" placeholder="yourname@upi" /></div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center p-3 mb-4"
+                                                         style="background:rgba(39,174,96,.1);border-radius:10px;border:1px solid #27ae60">
+                                                        <span class="fw-bold">Total Amount</span><span class="fw-bold fs-5"
+                                                                                                       style="color:#27ae60">₹@plan?.Price</span>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary w-100 py-3 fs-5"><i class="fas fa-lock me-2"></i>Pay
+                                                        Securely</button>
+                                                        <p class="text-center text-muted small mt-2"><i class="fas fa-shield-alt me-1"></i>256-bit SSL
+                                                            encrypted</p>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @section Scripts {
+                                            <script>
+                                                document.querySelectorAll('input[name="paymentMethod"]').forEach(r => r.addEventListener('change', function () {
+                                                    document.getElementById('cardFields').style.display = this.value === 'Card' ? 'block' : 'none';
+                                                    document.getElementById('upiFields').style.display = this.value === 'UPI' ? 'block' : 'none';
+                                                }));
+                                            </script>
+                                        }
