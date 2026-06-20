@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MegaFitness Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --primary: #f39c12;
+                --dark: #0d0d0d;
+                --card-bg: #1a1a2e;
+                --sidebar: #16213e;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background: #0d0d0d;
+                color: #e0e0e0;
+                font-family: 'Nunito', 'Segoe UI', sans-serif;
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                width: 240px;
+                background: var(--sidebar);
+                min-height: 100vh;
+                position: fixed;
+                left: 0;
+                top: 0;
+                z-index: 100;
+                border-right: 1px solid #2a2a4a;
+                transition: .3s;
+            }
+
+            .sidebar-brand {
+                padding: 20px;
+                border-bottom: 1px solid #2a2a4a;
+            }
+
+            .sidebar-brand h4 {
+                color: var(--primary);
+                font-weight: 800;
+                font-size: 1.1rem;
+            }
+
+            .sidebar-brand small {
+                color: #b0b0c8;
+                font-size: .75rem;
+            }
+
+            .nav-link {
+                color: #c8c8e0 !important;
+                padding: 12px 20px !important;
+                border-radius: 0;
+                transition: .2s;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                color: #fff !important;
+                background: rgba(243, 156, 18, .15);
+                border-left: 3px solid var(--primary);
+            }
+
+            .nav-link i {
+                width: 18px;
+                text-align: center;
+            }
+
+            .main-content {
+                margin-left: 240px;
+                padding: 25px;
+                min-height: 100vh;
+            }
+
+            .topbar {
+                background: var(--card-bg);
+                border-radius: 12px;
+                padding: 15px 20px;
+                margin-bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: 1px solid #2a2a4a;
+            }
+
+            .card {
+                background: var(--card-bg) !important;
+                border: 1px solid #2a2a4a !important;
+                border-radius: 14px !important;
+                color: #e0e0e0;
+            }
+
+            .card-header {
+                background: rgba(243, 156, 18, .1) !important;
+                border-bottom: 1px solid #2a2a4a !important;
+            }
+
+            .stat-card {
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                border-radius: 14px;
+                padding: 20px;
+                border: 1px solid #2a2a4a;
+                transition: .3s;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+                border-color: var(--primary);
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+                border: none !important;
+                font-weight: 600;
+            }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #e67e22, #d35400) !important;
+                transform: translateY(-1px);
+            }
+
+            .btn-outline-warning {
+                border-color: var(--primary) !important;
+                color: var(--primary) !important;
+            }
+
+            .btn-outline-warning:hover {
+                background: var(--primary) !important;
+                color: #000 !important;
+            }
+
+            .table {
+                color: #e0e0e0 !important;
+            }
+
+            .table thead th {
+                background: #0d1117 !important;
+                border-color: #2a2a4a !important;
+                color: #f39c12;
+                font-weight: 700;
+            }
+
+            .table tbody tr {
+                background: #1a1a2e !important;
+            }
+
+            .table tbody tr:nth-child(even) {
+                background: #16213e !important;
+            }
+
+            .table tbody td {
+                border-color: #2a2a4a !important;
+                color: #e0e0e0 !important;
+            }
+
+            .table tbody tr:hover {
+                background: rgba(243, 156, 18, .08) !important;
+            }
+
+            .table tbody tr:hover td {
+                color: #ffffff !important;
+            }
+
+            .badge-success {
+                background: #27ae60;
+            }
+
+            .badge-warning {
+                background: #f39c12;
+                color: #000;
+            }
+
+            .form-control,
+            .form-select {
+                background: #0d1117 !important;
+                border: 1px solid #2a2a4a !important;
+                color: #e0e0e0 !important;
+                border-radius: 8px;
+            }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: var(--primary) !important;
+                box-shadow: 0 0 0 3px rgba(243, 156, 18, .15) !important;
+            }
+
+            .form-control::placeholder {
+                color: #888;
+            }
+
+            .text-muted {
+                color: #b0b0c8 !important;
+            }
+
+            small {
+                color: #b0b0c8;
+            }
+
+            label,
+            .form-label {
+                color: #d8d8e8 !important;
+            }
+
+            p {
+                color: #d8d8e8;
+            }
+
+            td {
+                color: #e0e0e0 !important;
+            }
+
+            .table .text-muted {
+                color: #adb5bd !important;
+            }
+
+            .alert-success {
+                background: rgba(39, 174, 96, .15) !important;
+                border-color: #27ae60 !important;
+                color: #2ecc71 !important;
+            }
+
+            .alert-danger {
+                background: rgba(231, 76, 60, .15) !important;
+                border-color: #e74c3c !important;
+                color: #e74c3c !important;
+            }
+
+            .progress {
+                background: #1a1a2e;
+                border-radius: 50px;
+            }
+
+            .progress-bar {
+                background: linear-gradient(90deg, #f39c12, #e67e22);
+                border-radius: 50px;
+            }
+
+            .chat-box {
+                height: 400px;
+                overflow-y: auto;
+                background: #0d1117;
+                border-radius: 10px;
+                padding: 15px;
+                border: 1px solid #2a2a4a;
+            }
+
+            .msg-sent {
+                background: linear-gradient(135deg, #f39c12, #e67e22);
+                color: #111;
+                border-radius: 14px 14px 4px 14px;
+                padding: 10px 15px;
+                max-width: 70%;
+                margin-left: auto;
+                margin-bottom: 10px;
+            }
+
+            .msg-recv {
+                background: #1a1a2e;
+                border: 1px solid #2a2a4a;
+                border-radius: 14px 14px 14px 4px;
+                padding: 10px 15px;
+                max-width: 70%;
+                margin-bottom: 10px;
+            }
+
+            .msg-time {
+                font-size: .7rem;
+                opacity: .6;
+                margin-top: 4px;
+            }
+
+            ::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #0d0d0d;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #2a2a4a;
+                border-radius: 3px;
+            }
+
+            .glow {
+                box-shadow: 0 0 20px rgba(243, 156, 18, .3);
+            }
+
+            @@keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            .fade-in {
+                animation: fadeIn .4s ease;
+            }
+    </style>
+</head>
+
+<body>
+    @{
+        var role = Context.Session.GetString("role");
+        var uname = Context.Session.GetString("uname");
+        var uid = Context.Session.GetInt32("uid");
+    }
+    @if (uid != null)
+    {
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <h4><i class="fas fa-dumbbell me-2"></i>MegaFitness</h4>
+                <small>@uname · @role</small>
+            </div>
+            <nav class="nav flex-column mt-2">
+                @if (role == "Admin")
+                {
+                    <a class="nav-link" href="/Admin/Dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a class="nav-link" href="/Admin/Chat"><i class="fas fa-comments"></i> Messages</a>
+                }
+                else if (role == "Trainer")
+                {
+                    <a class="nav-link" href="/Trainer/Dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a class="nav-link" href="/Trainer/Chat"><i class="fas fa-comments"></i> Client Messages</a>
+                }
+                else
+                {
+                    <a class="nav-link" href="/User/Dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <a class="nav-link" href="/User/Attendance"><i class="fas fa-calendar-check"></i> Attendance</a>
+                    <a class="nav-link" href="/User/Progress"><i class="fas fa-chart-line"></i> Progress</a>
+                    <a class="nav-link" href="/User/Chat"><i class="fas fa-comments"></i> Chat Trainer</a>
+                    <a class="nav-link" href="/AI/Tips"><i class="fas fa-robot"></i> AI Fitness Tips</a>
+                }
+                <hr style="border-color:#2a2a4a; margin:10px 15px;" />
+                <a class="nav-link text-danger" href="/Auth/Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+        <div class="main-content fade-in">
+            <div class="topbar">
+                <div>
+                    <h6 class="mb-0 fw-bold" style="color:var(--primary)">MegaFitness Pro</h6>
+                    <small class="text-muted" style="color:#b0b0c8!important">@DateTime.Now.ToString("dddd, dd MMM yyyy")</small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-warning text-dark"><i class="fas fa-user me-1"></i>@uname</span>
+                </div>
+            </div>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success mb-3"><i class="fas fa-check-circle me-2"></i>@TempData["Success"]</div>
+            }
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        <div>@RenderBody()</div>
+    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>
