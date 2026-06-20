@@ -1,0 +1,112 @@
+@{
+    var trainers = ViewBag.Trainers as List<User> ?? new List<User>();
+    var messages = ViewBag.Messages as List<ChatMessage> ?? new List<ChatMessage>();
+    int myId = Context.Session.GetInt32("uid") ?? 0;
+    int selectedTrainerId = ViewBag.SelectedTrainerId ?? 0;
+    var selectedTrainer = trainers.FirstOrDefault(t => t.Id == selectedTrainerId);
+    var unreadPerTrainer = ViewBag.UnreadPerTrainer as Dictionary<int, int> ?? new Dictionary<int, int>();
+}
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold mb-0"><i class="fas fa-comments me-2" style="color:#f39c12"></i>Chat with Trainer</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-header py-3">
+                <h6 class="mb-0 fw-bold">Trainers</h6>
+            </div>
+            <div class="card-body p-0">
+                @foreach (var t in trainers)
+                {
+                    string activeStyle = (t.Id == selectedTrainerId) ? "background:rgba(243,156,18,.12);" : "";
+                    int unread = unreadPerTrainer.ContainsKey(t.Id) ? unreadPerTrainer[t.Id] : 0;
+                    <a href="/User/Chat?trainerId=@t.Id" class="d-flex align-items-center p-3 border-bottom"
+                       style="text-decoration:none;color:#e0e0e0;@activeStyle transition:.2s">
+                        <div
+                            style="width:40px;height:40px;background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#111;font-weight:700;flex-shrink:0">
+                            @t.Name[0]</div>
+                            <div class="ms-3 flex-grow-1">
+                                <div class="fw-bold">@t.Name</div>
+                                <small class="text-muted">@t.Specialization</small>
+                            </div>
+                            @if (unread > 0)
+                            {
+                                <span class="badge bg-danger rounded-pill">@unread</span>
+                            }
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header py-3 d-flex align-items-center" style="gap:10px">
+                    @if (selectedTrainer != null)
+                    {
+                        <div
+                            style="width:35px;height:35px;background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#111;font-weight:700">
+                            @selectedTrainer.Name[0]</div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">@selectedTrainer.Name</h6>
+                                <small class="text-muted">@selectedTrainer.Specialization · ₹@selectedTrainer.HourlyRate/hr</small>
+                            </div>
+                        } else
+                        {
+                            <h6 class="mb-0 fw-bold text-muted">Select a trainer to chat</h6>
+                        }
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="chat-box" id="chatBox">
+                            @if (messages.Any())
+                            {
+                                @foreach (var m in messages)
+                                {
+                                    if (m.SenderId == myId)
+                                    {
+                                        <div class="d-flex flex-column align-items-end mb-2">
+                                            <div class="msg-sent">@m.Message<div class="msg-time text-end">@m.SentAt.ToString("hh:mm tt")
+                                            </div>
+                                        </div>
+                                    </div>
+                                } else
+                                {
+                                    <div class="d-flex flex-column align-items-start mb-2">
+                                        <small class="text-muted mb-1 ms-1">@m.SenderName</small>
+                                        <div class="msg-recv">@m.Message<div class="msg-time">@m.SentAt.ToString("hh:mm tt")</div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        } else
+                        {
+                            <div class="text-center text-muted mt-5">
+                                <i class="fas fa-comments fa-3x mb-3 d-block"></i>
+                                @(selectedTrainer != null ? "No messages yet. Start a conversation! 💬" : "Select a trainer from the list")
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (selectedTrainer != null)
+                {
+                    <div class="card-footer p-3">
+                        <form method="post" action="/User/SendMessage">
+                            <input type="hidden" name="receiverId" value="@selectedTrainerId" />
+                            <div class="d-flex gap-2">
+                                <input type="text" name="message" class="form-control" placeholder="Type your message..."
+                                       autocomplete="off" required />
+                                <button type="submit" class="btn btn-warning px-4"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+        <script>
+            var cb = document.getElementById('chatBox');
+            if (cb) cb.scrollTop = cb.scrollHeight;
+        </script>
+    }
