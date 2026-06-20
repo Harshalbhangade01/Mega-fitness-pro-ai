@@ -1,0 +1,116 @@
+@{
+    var records = ViewBag.Records as List<Attendance>;
+    var today = ViewBag.TodayRecord as Attendance;
+}
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold mb-0"><i class="fas fa-calendar-check me-2" style="color:#f39c12"></i>Attendance</h4>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stat-card text-center">
+            <div class="stat-icon mx-auto" style="background:rgba(39,174,96,.2)"><i class="fas fa-check-circle"
+                                                                                        style="color:#27ae60"></i></div>
+                <h2 class="fw-bold" style="color:#27ae60">@(ViewBag.TotalDays ?? 0)</h2><small class="text-muted">Total
+                Days</small>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto" style="background:rgba(243,156,18,.2)"><i class="fas fa-calendar"
+                                                                                             style="color:#f39c12"></i></div>
+                    <h2 class="fw-bold" style="color:#f39c12">@(ViewBag.ThisMonth ?? 0)</h2><small class="text-muted">This
+                    Month</small>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon mx-auto" style="background:rgba(52,152,219,.2)"><i class="fas fa-clock"
+                                                                                                 style="color:#3498db"></i></div>
+                        <h6 class="fw-bold mt-2" style="color:#3498db">
+                            @if (today != null)
+                            {
+                                @today.CheckIn.ToString("hh:mm tt")
+                            }
+                            else
+                            {
+
+                                <span>Not Checked In</span>
+                            }
+                        </h6>
+                        <small class="text-muted">Today's Check-in</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check In/Out Buttons -->
+            <div class="card mb-4">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold mb-3">Today - @DateTime.Today.ToString("dddd, dd MMM yyyy")</h5>
+                    @if (today == null)
+                    {
+                        <a href="/User/CheckIn" class="btn btn-primary btn-lg px-5 me-3"><i class="fas fa-sign-in-alt me-2"></i>Check
+                            In</a>
+                        } else if (today.CheckOut == null)
+                        {
+                            <div class="mb-3"><span class="badge bg-success fs-6 px-4 py-2">Checked In at @today.CheckIn.ToString("hh:mm tt")</span></div>
+                            <a href="/User/CheckOut" class="btn btn-outline-warning btn-lg px-5"><i
+                                class="fas fa-sign-out-alt me-2"></i>Check Out</a>
+                            } else
+                            {
+                                var dur = (int)(today.CheckOut.Value - today.CheckIn).TotalMinutes;
+                                <div class="mb-2"><span class="badge bg-success fs-6 px-4 py-2">In: @today.CheckIn.ToString("hh:mm tt")</span>
+                                </div>
+                                <div class="mb-2"><span class="badge bg-warning text-dark fs-6 px-4 py-2">Out:
+                                    @today.CheckOut.Value.ToString("hh:mm tt")</span></div>
+                                    <div><span class="badge bg-info fs-6 px-4 py-2">Duration: @dur minutes</span></div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- History -->
+                        <div class="card">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i>Attendance History</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Check In</th>
+                                                <th>Check Out</th>
+                                                <th>Duration</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (records != null && records.Count > 0)
+                                            {
+                                                @foreach (var r in records)
+                                                {
+                                                    var duration = r.CheckOut.HasValue ? (int)(r.CheckOut.Value - r.CheckIn).TotalMinutes + " min" :
+                                 "Active";
+                                                    <tr>
+                                                        <td>@r.CheckIn.ToString("dd MMM yyyy")</td>
+                                                        <td>@r.CheckIn.ToString("hh:mm tt")</td>
+                                                        <td>@(r.CheckOut.HasValue ? r.CheckOut.Value.ToString("hh:mm tt") : "--")</td>
+                                                        <td>@duration</td>
+                                                        <td><span class="badge bg-success">@r.Status</span></td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted py-4">No attendance records yet. Check in today!
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
