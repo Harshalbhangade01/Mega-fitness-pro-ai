@@ -1,0 +1,33 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## NuGet
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Secrets (never commit real keys/connection strings)
+appsettings.Development.json
+appsettings.*.local.json
+secrets.json
+*.env
+.env
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
