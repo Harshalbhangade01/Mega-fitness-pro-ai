@@ -1,0 +1,146 @@
+@{
+    var records = ViewBag.Records as List<ProgressRecord>;
+    var latest = ViewBag.Latest as ProgressRecord;
+}
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold mb-0"><i class="fas fa-chart-line me-2" style="color:#f39c12"></i>Progress Tracker</h4>
+    </div>
+</div>
+
+@if (latest != null)
+{
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card text-center">
+                <div class="stat-icon mx-auto" style="background:rgba(243,156,18,.2)"><i class="fas fa-weight"
+                                                                                             style="color:#f39c12"></i></div>
+                    <h3 style="color:#f39c12">@latest.Weight kg</h3><small class="text-muted">Weight</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-card text-center">
+                    <div class="stat-icon mx-auto" style="background:rgba(52,152,219,.2)"><i class="fas fa-ruler-vertical"
+                                                                                                 style="color:#3498db"></i></div>
+                        <h3 style="color:#3498db">@latest.Height cm</h3><small class="text-muted">Height</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon mx-auto" style="background:rgba(39,174,96,.2)"><i class="fas fa-heartbeat"
+                                                                                                    style="color:#27ae60"></i></div>
+                            <h3 style="color:#27ae60">@latest.BMI</h3><small class="text-muted">BMI</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto" style="background:rgba(231,76,60,.2)"><i class="fas fa-circle-notch"
+                                                                                                        style="color:#e74c3c"></i></div>
+                                <h3 style="color:#e74c3c">@latest.Waist cm</h3><small class="text-muted">Waist</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Add Progress -->
+                <div class="card mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="mb-0 fw-bold"><i class="fas fa-plus-circle me-2" style="color:#f39c12"></i>Log Today's Measurements
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" action="/User/AddProgress">
+                            <div class="row">
+                                <div class="col-md-4 mb-3"><label class="form-label text-muted small">WEIGHT (kg)</label><input
+                                    type="number" step="0.1" name="weight" class="form-control" placeholder="70.5" required /></div>
+                                    <div class="col-md-4 mb-3"><label class="form-label text-muted small">HEIGHT (cm)</label><input
+                                        type="number" step="0.1" name="height" class="form-control" placeholder="175" required /></div>
+                                        <div class="col-md-4 mb-3"><label class="form-label text-muted small">CHEST (cm)</label><input
+                                            type="number" step="0.1" name="chest" class="form-control" placeholder="90" /></div>
+                                            <div class="col-md-4 mb-3"><label class="form-label text-muted small">WAIST (cm)</label><input
+                                                type="number" step="0.1" name="waist" class="form-control" placeholder="80" /></div>
+                                                <div class="col-md-4 mb-3"><label class="form-label text-muted small">HIPS (cm)</label><input
+                                                    type="number" step="0.1" name="hips" class="form-control" placeholder="95" /></div>
+                                                    <div class="col-md-4 mb-3"><label class="form-label text-muted small">NOTES</label><input type="text"
+                                                                                                                                                  name="notes" class="form-control" placeholder="Feeling great!" /></div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save me-2"></i>Save Progress</button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <!-- Chart -->
+                                        @if (records != null && records.Count > 1)
+                                        {
+                                            <div class="card mb-4">
+                                                <div class="card-header py-3">
+                                                    <h6 class="mb-0 fw-bold"><i class="fas fa-chart-area me-2"></i>Weight Progress Chart</h6>
+                                                </div>
+                                                <div class="card-body"><canvas id="weightChart" height="100"></canvas></div>
+                                            </div>
+                                        }
+
+                                        <!-- History Table -->
+                                        <div class="card">
+                                            <div class="card-header py-3">
+                                                <h6 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i>Progress History</h6>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Date</th>
+                                                                <th>Weight</th>
+                                                                <th>Height</th>
+                                                                <th>BMI</th>
+                                                                <th>Waist</th>
+                                                                <th>Notes</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (records != null && records.Count > 0)
+                                                            {
+                                                                @foreach (var r in records)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@r.RecordDate.ToString("dd MMM yyyy")</td>
+                                                                        <td><strong style="color:#f39c12">@r.Weight kg</strong></td>
+                                                                        <td>@r.Height cm</td>
+                                                                        <td><span
+                                                                            class="badge @(r.BMI < 18.5 ? "bg-info" : r.BMI < 25 ? "bg-success" : r.BMI < 30 ? "bg-warning text-dark" : "bg-danger")">@r.BMI</span>
+                                                                        </td>
+                                                                        <td>@r.Waist cm</td>
+                                                                        <td class="text-muted small">@r.Notes</td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <tr>
+                                                                    <td colspan="6" class="text-center text-muted py-4">No records yet. Log your first measurement!
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @section Scripts {
+                                            <script>
+                                            @if (records != null && records.Count > 1)
+                                            {
+                                                        var labels = @Html.Raw("[" + string.Join(",", records.OrderBy(r => r.RecordDate).Select(r => "\"" + r.RecordDate.ToString("dd MMM") + "\"")) + "]");
+                                                        var data = @Html.Raw("[" + string.Join(",", records.OrderBy(r => r.RecordDate).Select(r => r.Weight)) + "]");
+                                                        <text>
+                                                                new Chart(document.getElementById('weightChart'), {
+                                                                    type: 'line',
+                                                                data: {labels: labels, datasets: [{label: 'Weight (kg)', data: data, borderColor: '#f39c12', backgroundColor: 'rgba(243,156,18,.1)', borderWidth: 3, pointBackgroundColor: '#f39c12', tension: 0.4, fill: true }] },
+                                                                options: {responsive: true, plugins: {legend: {labels: {color: '#e0e0e0' } } }, scales: {x: {ticks: {color: '#aaa' }, grid: {color: '#2a2a4a' } }, y: {ticks: {color: '#aaa' }, grid: {color: '#2a2a4a' } } } }
+                                                        });
+                                                        </text>
+                                                }
+                                            </script>
+                                        }
