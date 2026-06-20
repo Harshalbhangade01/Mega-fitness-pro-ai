@@ -1,0 +1,135 @@
+@{
+    var plans = ViewBag.Plans as List<Plan>;
+    var trainers = ViewBag.Trainers as List<User>;
+    var myPlans = ViewBag.MyPlans as List<UserPlan>;
+    var myBookings = ViewBag.MyBookings as List<TrainerBooking>;
+    var progress = ViewBag.LatestProgress as ProgressRecord;
+}
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold mb-0">Welcome back, <span style="color:#f39c12">@ViewBag.UserName</span> 💪</h4><small
+        class="text-muted">Let's crush your fitness goals today!</small>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 col-6 mb-3">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(52,152,219,.2)"><i class="fas fa-clipboard-list"
+                                                                                 style="color:#3498db"></i></div>
+                <h3 class="fw-bold mb-0" style="color:#3498db">@(myPlans?.Count ?? 0)</h3>
+                <small class="text-muted">Active Plans</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:rgba(39,174,96,.2)"><i class="fas fa-calendar-check"
+                                                                                    style="color:#27ae60"></i></div>
+                    <h3 class="fw-bold mb-0" style="color:#27ae60">@(ViewBag.AttendanceCount ?? 0)</h3>
+                    <small class="text-muted">Gym Visits</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(243,156,18,.2)"><i class="fas fa-weight"
+                                                                                         style="color:#f39c12"></i></div>
+                        <h3 class="fw-bold mb-0" style="color:#f39c12">@(progress != null ? progress.Weight + " kg" : "--")</h3>
+                        <small class="text-muted">Current Weight</small>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:rgba(155,89,182,.2)"><i class="fas fa-comments"
+                                                                                             style="color:#9b59b6"></i></div>
+                            <h3 class="fw-bold mb-0" style="color:#9b59b6">@(ViewBag.UnreadMessages ?? 0)</h3>
+                            <small class="text-muted">New Messages</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="text-muted mb-3 text-uppercase" style="letter-spacing:1px">Quick Actions</h6>
+                    </div>
+                    <div class="col-md-3 col-6 mb-2">
+                        <a href="/User/CheckIn" class="btn btn-primary w-100 py-2"><i class="fas fa-sign-in-alt me-2"></i>Check In</a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-2">
+                        <a href="/User/Attendance" class="btn btn-outline-warning w-100 py-2"><i
+                            class="fas fa-calendar me-2"></i>Attendance</a>
+                        </div>
+                        <div class="col-md-3 col-6 mb-2">
+                            <a href="/User/Progress" class="btn btn-outline-warning w-100 py-2"><i
+                                class="fas fa-chart-line me-2"></i>Progress</a>
+                            </div>
+                            <div class="col-md-3 col-6 mb-2">
+                                <a href="/User/Chat" class="btn btn-outline-warning w-100 py-2"><i class="fas fa-comments me-2"></i>Chat</a>
+                            </div>
+                        </div>
+
+                        <!-- Plans -->
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="mb-0 fw-bold"><i class="fas fa-tags me-2" style="color:#f39c12"></i>Membership Plans</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach (var p in plans ?? new List<Plan>())
+                                    {
+                                        var features = p.Features.Split('|');
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card h-100" style="border-color:#f39c12!important">
+                                                <div class="card-body text-center p-4">
+                                                    <h5 class="fw-bold" style="color:#f39c12">@p.PlanName</h5>
+                                                    <h2 class="fw-bold my-2">₹@p.Price<small class="text-muted fs-6">/mo</small></h2>
+                                                    <p class="text-muted small">@p.Description</p>
+                                                    <hr style="border-color:#2a2a4a" />
+                                                    @foreach (var f in features)
+                                                    {
+                                                        <div class="text-start small mb-1"><i class="fas fa-check me-2"
+                                                                                                  style="color:#27ae60"></i>@f</div>
+                                                        }
+                                                        <a href="/User/Payment?planId=@p.Id" class="btn btn-primary w-100 mt-3">Buy Now</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Trainers -->
+                            <div class="card">
+                                <div class="card-header py-3">
+                                    <h6 class="mb-0 fw-bold"><i class="fas fa-user-tie me-2" style="color:#f39c12"></i>Our Trainers</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        @foreach (var t in trainers ?? new List<User>())
+                                        {
+                                            <div class="col-md-4 mb-3">
+                                                <div class="card h-100">
+                                                    <div class="card-body text-center p-4">
+                                                        <div
+                                                            style="width:70px;height:70px;background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 15px;font-size:1.8rem;color:#000">
+                                                            <i class="fas fa-user"></i>
+                                                        </div>
+                                                        <h6 class="fw-bold">@t.Name</h6>
+                                                        <span class="badge bg-warning text-dark mb-2">@t.Specialization</span>
+                                                        <p class="text-muted small">@t.Bio</p>
+                                                        <p class="mb-2"><strong style="color:#f39c12">₹@t.HourlyRate</strong><small
+                                                            class="text-muted">/hour</small></p>
+                                                            <div class="mb-3">@for(int i=0;i<t.Rating;i++){
+                                                                <i class="fas fa-star text-warning"></i>
+                                                            }
+                                                        </div>
+                                                        <a href="/User/BookTrainer/@t.Id" class="btn btn-outline-warning btn-sm w-100">Book Trainer</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
